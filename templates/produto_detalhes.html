@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Meta tags obrigatórias -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
+    <title>{{ produto.nome }} - MinheLoja</title>
+</head>
+<body>
+    <!-- Barra de navegação (igual à página inicial) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-shop"></i> MinheLoja
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Início</a>
+                    </li>
+                </ul>
+                
+                <!-- Links do usuário -->
+                <ul class="navbar-nav">
+                    {% if session.usuario_logado %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ session.usuario_logado.nome }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Sair</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{{ url_for('carrinho') }}">
+                            <i class="bi bi-cart3"></i> Carrinho
+                            {% if session.carrinho %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ session.carrinho|length }}
+                                </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container principal -->
+    <div class="container mt-4">
+        <!-- Breadcrumb (navegação) -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}">Início</a>
+                </li>
+                <li class="breadcrumb-item">
+                    {{ produto.categoria|title }}
+                </li>
+                <li class="breadcrumb-item active">
+                    {{ produto.nome }}
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Exibição de mensagens flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% set alert_class = 'alert-info' %}
+                    {% if category == 'error' %}
+                        {% set alert_class = 'alert-danger' %}
+                    {% elif category == 'success' %}
+                        {% set alert_class = 'alert-success' %}
+                    {% endif %}
+                    
+                    <div class="alert {{ alert_class }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Detalhes do produto -->
+        <div class="row">
+            <!-- Coluna da imagem -->
+            <div class="col-md-6">
+                <div class="card">
+                    <img src="{{ produto.imagem }}" class="card-img-top" alt="{{ produto.nome }}" 
+                         style="height: 400px; object-fit: cover;">
+                </div>
+            </div>
+            
+            <!-- Coluna das informações -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <!-- Badge da categoria -->
+                        <span class="badge bg-secondary mb-3">
+                            {{ produto.categoria|title }}
+                        </span>
+                        
+                        <!-- Nome do produto -->
+                        <h1 class="card-title">{{ produto.nome }}</h1>
+                        
+                        <!-- Descrição detalhada -->
+                        <p class="card-text lead">{{ produto.descricao }}</p>
+                        
+                        <!-- Preço em destaque -->
+                        <div class="mb-4">
+                            <h2 class="text-success">
+                                <i class="bi bi-currency-dollar"></i>
+                                R$ {{ "%.2f"|format(produto.preco) }}
+                            </h2>
+                        </div>
+                        
+                        <!-- Informações adicionais -->
+                        <div class="mb-4">
+                            <h5>Informações do Produto:</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Produto original</li>
+                                <li><i class="bi bi-truck text-primary"></i> Frete grátis acima de R$ 200</li>
+                                <li><i class="bi bi-shield-check text-info"></i> Garantia do fabricante</li>
+                                <li><i class="bi bi-arrow-clockwise text-warning"></i> Troca em até 30 dias</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Botões de ação -->
+                        <div class="d-grid gap-2">
+                            <!-- Botão principal de compra -->
+                            <a href="{{ url_for('adicionar_carrinho', produto_id=produto.id) }}" 
+                               class="btn btn-success btn-lg">
+                                <i class="bi bi-cart-plus"></i> Adicionar ao Carrinho
+                            </a>
+                            
+                            <!-- Botão secundário voltar -->
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Voltar às Compras
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produtos relacionados (mesma categoria) -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3>
+                    <i class="bi bi-star"></i> Você também pode gostar
+                </h3>
+                <hr>
+            </div>
+        </div>
+        
+        <!-- Nota: Em um sistema real, você buscaria produtos da mesma categoria -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="alert">
+                    <p>
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            Ver Todos os Produtos
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container">
+            <div class="text-center">
+                <p>&copy; 2024 MinheLoja. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

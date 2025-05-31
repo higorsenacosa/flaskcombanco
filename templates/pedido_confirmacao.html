@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Meta tags obrigatórias -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
+    <title>Pedido Confirmado - MinheLoja</title>
+</head>
+<body>
+    <!-- Barra de navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-shop"></i> MinheLoja
+            </a>
+            
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">
+                        <i class="bi bi-house"></i> Início
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Container principal -->
+    <div class="container mt-4">
+        <!-- Mensagem de sucesso principal -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-success text-center" role="alert">
+                    <div class="display-1 text-success mb-3">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h1 class="alert-heading">Pedido Confirmado!</h1>
+                    <p class="lead">
+                        Seu pedido #{{ pedido.id }} foi realizado com sucesso.
+                    </p>
+                    <hr>
+                    <p class="mb-0">
+                        Enviaremos um email de confirmação para <strong>{{ session.usuario_logado.email }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalhes do pedido -->
+        <div class="row">
+            <!-- Coluna esquerda - Informações do pedido -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-receipt"></i> Detalhes do Pedido #{{ pedido.id }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Informações do cliente -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Cliente</h6>
+                                <p class="mb-0">{{ session.usuario_logado.nome }}</p>
+                                <small class="text-muted">{{ session.usuario_logado.email }}</small>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Status</h6>
+                                <span class="badge bg-warning">{{ pedido.status }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Endereço de entrega -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-muted">Endereço de Entrega</h6>
+                                <p class="mb-0">
+                                    {{ pedido.endereco }}<br>
+                                    {{ pedido.cidade }} - {{ pedido.cep }}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Itens do pedido -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="text-muted">Itens Pedidos</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Produto</th>
+                                                <th>Preço</th>
+                                                <th>Qtd</th>
+                                                <th>Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Loop pelos itens do pedido -->
+                                            {% for item in pedido.itens %}
+                                                <tr>
+                                                    <td>{{ item.nome }}</td>
+                                                    <td>R$ {{ "%.2f"|format(item.preco) }}</td>
+                                                    <td>{{ item.quantidade }}</td>
+                                                    <td>R$ {{ "%.2f"|format(item.preco * item.quantidade) }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <th colspan="3">Total</th>
+                                                <th>R$ {{ "%.2f"|format(pedido.total) }}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Coluna direita - Próximos passos -->
+            <div class="col-lg-4">
+                <!-- Card com próximos passos -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock"></i> Próximos Passos
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <!-- Step 1 - Concluído -->
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Pedido Confirmado</h6>
+                                    <small class="text-muted">Agora mesmo</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2 - Em andamento -->
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-clock text-warning"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Processamento</h6>
+                                    <small class="text-muted">1-2 horas</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 3 - Futuro -->
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-truck text-muted"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Envio</h6>
+                                    <small class="text-muted">1-2 dias úteis</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 4 - Futuro -->
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-house text-muted"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Entrega</h6>
+                                    <small class="text-muted">3-5 dias úteis</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card com informações importantes -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle"></i> Informações Importantes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-envelope text-primary"></i>
+                                Enviaremos atualizações por email
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-arrow-clockwise text-success"></i>
+                                Troca em até 30 dias
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-shield-check text-info"></i>
+                                Garantia do fabricante
+                            </li>
+                            <li>
+                                <i class="bi bi-headset text-warning"></i>
+                                Suporte: contato@minhaloja.com
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botões de ação -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="bi bi-shop"></i> Continuar Comprando
+                </a>
+                <button onclick="window.print()" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-printer"></i> Imprimir Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container">
+            <div class="text-center">
+                <p>&copy; 2024 MinheLoja. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
