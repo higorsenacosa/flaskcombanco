@@ -1,0 +1,115 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Flask specific
+instance/
+*.db
+*.sqlite3
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyderworkspace
+
+# VS Code settings
+.vscode/
+
+# mypy
+.mypy_cache/
+.dmypy.json```
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+
+# Flask runtime and config
+instance/
+*.db
+*.sqlite3
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+
+# Build and distribution artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test and coverage outputs
+.tox/
+.coverage
+.cache
+htmlcov/
+
+# IDE and editor folders
+.vscode/
+.idea/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints
+
+# Miscellaneous
+*.log
+*.spec
